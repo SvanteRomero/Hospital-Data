@@ -1,9 +1,3 @@
-Of course! Based on the content of your Jupyter Notebooks, I've created a comprehensive markdown report that documents your work from FY 2022-2025.
-
-Here is the markdown report, which you can copy and paste into a `.md` file.
-
----
-
 # Work Report: FY 2022-2025 Data Analysis and Predictive Modeling
 
 **Author:** Svante Romero
