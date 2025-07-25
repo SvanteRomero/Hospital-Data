@@ -59,7 +59,7 @@ This report summarizes the data analysis and predictive modeling projects undert
     * A highly accurate regression model that provides a specific, predicted penalty percentage for each hospital.
     * A definitive, prioritized list of the **top 20 at-risk hospitals for FY 2025** based on their predicted financial penalty.
 
-    *_(Here, you can embed the bar chart from your notebook showing the "Top 20 At-Risk Hospitals by Predicted Payment Reduction")_*
+    ![alt text](image.png)
 
 ---
 
