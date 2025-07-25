@@ -7,63 +7,78 @@
 
 ## 1. Executive Summary
 
-This report details the data analysis and predictive modeling projects undertaken from FY 2022-2025. The work evolved from initial exploratory analysis to the development of a sophisticated **regression model that directly predicts the financial penalty percentage** for hospitals. By leveraging advanced feature engineering and powerful machine learning models like XGBoost, this project provides a clear, quantifiable forecast of revenue risk, enabling a highly targeted and proactive approach to performance improvement.
+This report summarizes the data analysis and predictive modeling projects undertaken from FY 2022-2025. The work progressed from foundational data consolidation and exploratory analysis to the development of a sophisticated **regression model that directly predicts the financial penalty percentage for at-risk hospitals**. This final model moves beyond simple classification to provide a precise, actionable metric for quantifying and prioritizing financial risk, culminating in a targeted list of hospitals for immediate intervention in FY 2025.
 
 ---
 
-## 2. Key Findings & Actionable Insights
+## 2. Key Findings and Actionable Insights
 
-* **Direct Financial Risk Prediction:** The final regression model accurately predicts the `Payment reduction percentage` for FY 2025, moving beyond simple classification to provide a specific financial risk forecast for each hospital.
-* **Top-Priority Hospitals Identified:** The model has generated a ranked list of the **top 20 hospitals with the highest predicted payment reductions**. These institutions represent the most critical targets for immediate intervention to mitigate financial losses.
-* **Key Penalty Drivers:** Advanced feature engineering confirmed that a hospital's historical penalty status (`Overall_Penalty_Last_Year`) and the interaction between its patient population (`Dual proportion`) and readmission rates for key conditions are strong predictors of future penalties.
-* **Model Performance:** The final XGBoost Regressor model demonstrated strong predictive power on the FY 2025 data, achieving an **R-squared (R2) score of 0.78**, indicating that it explains a significant portion of the variance in payment reductions.
+* **Direct Penalty Prediction:** The final model (`04_improved_revenue_risk_model.ipynb`) successfully predicts the actual `Payment reduction percentage` for the upcoming fiscal year, allowing for precise financial risk assessment.
+* **High-Priority Hospitals for FY 2025:** A targeted list of the **top 20 hospitals with the highest predicted payment reductions** for FY 2025 has been generated. This provides a clear, data-driven action plan for the business.
+* **Key Penalty Drivers:** Exploratory analysis consistently identified **Heart Failure (HF) and COPD** as the conditions most frequently leading to penalties, underscoring their importance in quality improvement initiatives.
+* **Historical Performance as a Predictor:** The models confirmed that a hospital's penalty status in the previous year (`Overall_Penalty_Last_Year`) is a powerful predictor of future performance.
 
 ---
 
 ## 3. Projects and Workstreams
 
-### 3.1. Data Consolidation & Exploratory Analysis
+### 3.1. Data Preprocessing and Consolidation (`01_setup_test.ipynb`)
 
-* **Objective:** To create a unified dataset and perform initial analysis to understand penalty drivers.
+* **Objective:** To create a unified and analysis-ready dataset from multiple fiscal year Excel files.
+* **Outcome:** A consolidated CSV file (`FY_2022-2025.csv`) that served as the foundation for all subsequent work.
+
+### 3.2. Exploratory Data Analysis and Insights (`02_analysis_data.ipynb`)
+
+* **Objective:** To analyze the consolidated data to identify trends, correlations, and actionable insights.
+* **Key Findings:** Identified the top penalized hospitals, underperforming peer groups, and the conditions driving the highest number of penalties.
+
+### 3.3. Penalty Prediction Models (V2 & V3)
+
+* **Objective:** To build and tune a series of advanced **classification models** to predict whether a hospital would be penalized.
 * **Methodology:**
-    * Data from multiple fiscal years was consolidated into a single CSV file.
-    * Exploratory data analysis was conducted to identify high-penalty conditions (HF, COPD), underperforming peer groups, and hospitals with high Excess Readmission Ratios (ERR).
-* **Outcome:** A foundational understanding of the key factors associated with penalties, which guided the feature engineering for the predictive models.
+    * **Models:** Used `RandomForestClassifier`, `GradientBoostingClassifier`, **XGBoost**, and **LightGBM**.
+    * **Techniques:** Employed **SMOTE** to handle class imbalance and `GridSearchCV` for hyperparameter tuning.
+* **Outcome:** These models achieved high accuracy (up to **98.66%** for the HF condition) in classifying hospitals as "at-risk" or "not at-risk."
 
-### 3.2. Predictive Modeling V1: Penalty Classification
+### 3.4. Revenue at Risk (RaR) Simulation (`03_revenue_risk.ipynb`)
 
-* **Objective:** To build and tune advanced classification models to predict the likelihood of a penalty.
+* **Objective:** To quantify the *potential* financial opportunity by simulating the impact of performance improvements.
 * **Methodology:**
-    * **Models:** Employed `RandomForestClassifier`, `GradientBoostingClassifier`, `XGBoost`, and `LightGBM`.
-    * **Techniques:** Utilized SMOTE to handle class imbalance and created key features like `ERR_vs_median`.
-* **Outcome:** The models achieved high accuracy in classification (e.g., **98.66% for HF**), validating the strength of the engineered features. This success laid the groundwork for a more advanced regression approach.
+    * Calculated the potential revenue change if a hospital's ERR improved to its peer group's median.
+    * A **Monte Carlo simulation** was used to model uncertainty and produce a 95% confidence interval for the RaR.
+* **Outcome:** This analysis provided a simulated financial risk, which was a valuable step toward quantifying the problem.
 
-### 3.3. Advanced Modeling V2: Direct Penalty Prediction (Regression)
+### 3.5. Predictive Revenue Risk Modeling (`04_improved_revenue_risk_model.ipynb`)
 
-* **Objective:** To build a regression model to directly predict the `Payment reduction percentage` and quantify the financial risk.
+* **Objective:** To improve upon the RaR simulation by building a **regression model** to directly predict the `Payment reduction percentage`.
 * **Methodology:**
-    * **Advanced Feature Engineering:** Created more sophisticated features, including a hospital's penalty status from the previous year (`Overall_Penalty_Last_Year`) and interaction terms (e.g., `Dual_x_ERR_HF`).
-    * **Model:** An **XGBoost Regressor** was chosen for its high performance. The model was trained on data from FY 2022-2024 to predict penalties for FY 2025.
-    * **Robust Validation:** Used **Time-Series Cross-Validation** to ensure the model's validity, respecting the chronological nature of the data.
+    * **Advanced Feature Engineering:** Created more powerful features, including `Overall_Penalty_Last_Year` and interaction terms (e.g., `Dual_x_ERR_HF`).
+    * **Regression Models:** An **XGBoost Regressor** was trained and tuned using `TimeSeriesSplit` cross-validation to respect the chronological nature of the data.
+    * **Chronological Split:** The model was trained on data from FY 2022-2024 to make predictions for FY 2025.
 * **Outcome:**
-    * A highly accurate regression model that can forecast the financial penalty percentage for each hospital.
-    * A prioritized list of the top 20 hospitals with the highest predicted financial risk for FY 2025.
+    * A highly accurate regression model that provides a specific, predicted penalty percentage for each hospital.
+    * A definitive, prioritized list of the **top 20 at-risk hospitals for FY 2025** based on their predicted financial penalty.
 
-    *_(Here, you can embed the final, corrected bar chart from your notebook showing the "Top 20 At-Risk Hospitals by Predicted Payment Reduction")_*
+    *_(Here, you can embed the bar chart from your notebook showing the "Top 20 At-Risk Hospitals by Predicted Payment Reduction")_*
 
 ---
 
-## 4. Tools and Technologies
+## 4. Tools and Technologies Used
 
-* **Language & Libraries:** Python, Pandas, NumPy, scikit-learn, XGBoost, Matplotlib, Seaborn
+* **Programming Language:** Python
+* **Core Libraries:** Pandas, NumPy, scikit-learn
+* **Advanced Modeling:** XGBoost, LightGBM, imblearn (for SMOTE)
+* **Visualization:** Matplotlib, Seaborn
 * **Development Environment:** Jupyter Notebook
 
 ---
 
-## 5. Recommendations and Next Steps
+## 5. Conclusion and Recommendations
 
-Based on the predictive model's output, the following actions are recommended:
+This work successfully evolved from data exploration to a powerful predictive tool. The final regression model provides a precise, forward-looking measure of financial risk, enabling a more strategic and data-driven approach to hospital performance management.
 
-* **Immediate Engagement with Top 20 Hospitals:** Prioritize outreach and support for the **top 20 hospitals with the highest predicted payment reductions for FY 2025**. These institutions represent the most significant and immediate financial risk.
-* **Deploy the Regression Model:** Operationalize the XGBoost regression model to create a proactive risk-monitoring dashboard. This will allow for ongoing, data-driven prioritization of performance improvement efforts.
-* **Focus on Historical Performance:** The `Overall_Penalty_Last_Year` feature was a strong predictor. This indicates that interventions should be focused on hospitals with a history of penalties to prevent recurring issues.
+**Recommendations:**
+
+1.  **Immediate Action on Top 20 List:** Prioritize engagement with the **top 20 hospitals identified by the XGBoost regression model**. These hospitals have the highest predicted financial penalties for FY 2025 and represent the most critical targets for intervention.
+2.  **Deploy the Regression Model:** Operationalize the predictive model into a dashboard to provide ongoing, real-time risk scores for all hospitals.
+3.  **Focus QI Efforts:** Continue to allocate quality improvement resources to address **Heart Failure and COPD**, as they remain the primary drivers of penalties.
